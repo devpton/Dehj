@@ -7,8 +7,6 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <!-- 1. TELA INICIAL (Mantivemos para ela ver o nome do Hotel) -->
   <div id="welcomeScreen" class="screen active">
     <div class="welcome-bg">
       <div class="welcome-panel">
@@ -23,36 +21,21 @@
           Seu lugar de descanso,<br>beleza e momentos<br>inesquecíveis.
           <div class="welcome-heart-bottom">🩷</div>
         </div>
-        <!-- Ao clicar aqui, vamos direto para o jogo no game.js -->
         <button class="btn-enter" id="btnEnter">✦ ENTRAR NO HOTEL ✦</button>
       </div>
     </div>
   </div>
 
-  <!-- 2. TELA DO JOGO (Simplificada) -->
   <div id="gameScreen" class="screen">
-    <!-- Barra superior apenas com o essencial -->
     <div id="topBar">
-      <span class="game-logo">🏠</span>
-      <div class="top-buttons">
-        <button class="top-btn" onclick="window.location.reload()">🔄 Reiniciar</button>
-      </div>
+      <span class="game-logo">🏠 Jade Hotel</span>
+      <button class="top-btn" onclick="window.location.reload()">🔄 Reiniciar</button>
     </div>
-
-    <!-- Onde o Phaser vai desenhar o quarto -->
     <div id="gameContainer"></div>
-
-    <!-- Barra de ações (Vamos reativar as animações depois) -->
-    <div id="actionBar">
-      <button class="action-btn" id="btnIdle">⏹ Parar</button>
-    </div>
-
-    <div id="toast"></div>
+    <div id="toast">Toque no quarto para mover.</div>
   </div>
 
-  <!-- Phaser 3 -->
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
-  <!-- O seu novo game.js limpo -->
   <script src="game.js"></script>
 </body>
 </html>
