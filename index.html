@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planner Instagram IA</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --primary: #6d4aff;
+      --primary-hover: #5a3de0;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --ok: #0f766e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eef2ff 0%, var(--bg) 40%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 760px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+      padding: 18px;
+    }
+
+    h1 {
+      margin-top: 0;
+      text-align: center;
+      font-size: 1.5rem;
+    }
+
+    p.desc {
+      margin-top: 6px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      background: #fff;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.15);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    #generateBtn {
+      background: var(--primary);
+      color: white;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    #generateBtn:hover { background: var(--primary-hover); }
+
+    #copyBtn {
+      background: #f3f4f6;
+      color: #111827;
+      border: 1px solid var(--border);
+    }
+
+    #result {
+      margin-top: 16px;
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      min-height: 140px;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      font-size: 0.95rem;
+    }
+
+    .hint {
+      margin-top: 10px;
+      color: var(--ok);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <h1>📅 Planner Instagram IA</h1>
+    <p class="desc">Gere um plano diário completo de conteúdo para Instagram com IA.</p>
+
+    <div class="grid">
+      <div>
+        <label for="place">Onde você estará hoje?</label>
+        <input id="place" type="text" placeholder="Ex: em casa, no trabalho, na rua" />
+      </div>
+
+      <div>
+        <label for="time">Quanto tempo livre você tem?</label>
+        <input id="time" type="text" placeholder="Ex: 1h, 2h à noite" />
+      </div>
+
+      <div>
+        <label for="goal">Objetivo do dia</label>
+        <select id="goal">
+          <option value="crescer">Crescer</option>
+          <option value="vender">Vender</option>
+          <option value="engajar">Engajar</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button id="generateBtn">Gerar Plano</button>
+      <button id="copyBtn" type="button">Copiar plano</button>
+    </div>
+
+    <div id="result">Preencha os campos e clique em "Gerar Plano".</div>
+    <div class="hint" id="status"></div>
+  </main>
+
+  <script>
+    // ======================= CONFIGURAÇÃO DA OPENAI =======================
+    // Cole sua chave da API da OpenAI abaixo.
+    // IMPORTANTE: Em produção, o ideal é chamar a OpenAI no backend,
+    // para não expor a chave no navegador.
+    const OPENAI_API_KEY = "COLE_SUA_API_KEY_AQUI";
+
+    // Modelo a ser usado na API Responses.
+    const MODEL_NAME = "gpt-4.1-mini";
+
+    const generateBtn = document.getElementById("generateBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const resultEl = document.getElementById("result");
+    const statusEl = document.getElementById("status");
+
+    // Função utilitária para exibir mensagens de status.
+    function setStatus(message, isError = false) {
+      statusEl.textContent = message;
+      statusEl.style.color = isError ? "#b91c1c" : "#0f766e";
+    }
+
+    // Função principal para chamar a OpenAI e gerar o plano.
+    async function generatePlan() {
+      const place = document.getElementById("place").value.trim();
+      const freeTime = document.getElementById("time").value.trim();
+      const goal = document.getElementById("goal").value;
+
+      if (!place || !freeTime || !goal) {
+        setStatus("Preencha todos os campos antes de gerar o plano.", true);
+        return;
+      }
+
+      if (OPENAI_API_KEY === "COLE_SUA_API_KEY_AQUI") {
+        setStatus("Você ainda não inseriu sua API Key no código.", true);
+        return;
+      }
+
+      setStatus("Gerando plano com IA...");
+      resultEl.textContent = "Aguarde alguns segundos...";
+
+      // Prompt com formato obrigatório para garantir que o plano venha completo.
+      const prompt = `
+Você é um estrategista de conteúdo para Instagram.
+Crie um plano diário em português do Brasil, claro e objetivo.
+
+Contexto do usuário:
+- Local de hoje: ${place}
+- Tempo livre disponível: ${freeTime}
+- Objetivo principal: ${goal}
+
+Entregue EXATAMENTE com esta estrutura:
+
+PLANO DO DIA (data de hoje)
+
+1) Horários exatos de postagem
+- Story manhã: HH:MM
+- Story tarde: HH:MM
+- Story noite: HH:MM
+- Reels: HH:MM
+- Feed: HH:MM
+
+2) 3 ideias de stories
+- Manhã: ...
+- Tarde: ...
+- Noite: ...
+
+3) Ideia de Reels com roteiro
+- Tema: ...
+- Gancho: ...
+- Desenvolvimento: ...
+- CTA: ...
+
+4) Ideia de post de feed
+- Formato (foto/carrossel): ...
+- Tema: ...
+- Legenda sugerida: ...
+
+5) CTA do dia
+- ...
+
+Seja prático e específico para a rotina informada.
+`;
+
+      try {
+        const response = await fetch("https://api.openai.com/v1/responses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${OPENAI_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: MODEL_NAME,
+            input: prompt
+          })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Erro na API (${response.status}): ${errorText}`);
+        }
+
+        const data = await response.json();
+
+        // Extração do texto retornado na Responses API.
+        const content = data.output_text || "Não foi possível ler a resposta da IA.";
+
+        resultEl.textContent = content;
+        setStatus("Plano gerado com sucesso!");
+      } catch (error) {
+        console.error(error);
+        resultEl.textContent = "Falha ao gerar o plano.";
+        setStatus("Erro ao chamar a OpenAI. Verifique sua API Key e conexão.", true);
+      }
+    }
+
+    // Copia o plano gerado para a área de transferência.
+    async function copyPlan() {
+      const text = resultEl.textContent.trim();
+      if (!text || text.startsWith("Preencha os campos")) {
+        setStatus("Gere um plano antes de copiar.", true);
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+        setStatus("Plano copiado!");
+      } catch {
+        setStatus("Não foi possível copiar automaticamente. Copie manualmente.", true);
+      }
+    }
+
+    generateBtn.addEventListener("click", generatePlan);
+    copyBtn.addEventListener("click", copyPlan);
+  </script>
+</body>
+</html>
