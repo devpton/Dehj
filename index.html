@@ -2,100 +2,52 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <!-- Viewport configurado para tablets e celulares -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <title>🏠 MeuQuartinho</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Mini Quarto Isométrico</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="game-wrap">
+    <div id="hud-top">
+      <button id="btn-save">Salvar</button>
+      <button id="btn-reset">Reset Quarto</button>
+      <button id="btn-custom">Customizar</button>
+      <button id="btn-sit">Sentar</button>
+      <button id="btn-dance">Dançar</button>
+    </div>
 
-  <!-- ===== TELA DE CUSTOMIZAÇÃO DO AVATAR ===== -->
-  <div id="customizeScreen" class="screen active">
-    <div class="customize-bg">
-      <h1 class="game-title">🏠 MeuQuartinho</h1>
-      <p class="subtitle">Crie sua personagem!</p>
+    <div id="phaser-game"></div>
 
-      <!-- Preview do avatar na customização -->
-      <div class="avatar-preview-box">
-        <canvas id="avatarPreview" width="120" height="180"></canvas>
+    <aside id="catalog-panel">
+      <h2>Mobília</h2>
+      <div id="catalog-list"></div>
+      <div class="item-actions">
+        <button id="btn-rotate">Girar</button>
+        <button id="btn-delete">Deletar</button>
       </div>
+    </aside>
 
-      <!-- Opções de cor de pele -->
-      <div class="option-section">
-        <label>🎨 Cor de pele</label>
-        <div class="option-row" id="skinOptions">
-          <button class="skin-btn active" data-skin="0" style="background:#FFDBB4;">A</button>
-          <button class="skin-btn" data-skin="1" style="background:#C68642;">B</button>
-          <button class="skin-btn" data-skin="2" style="background:#8D5524;">C</button>
+    <div id="avatar-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3>Avatar (menina)</h3>
+        <label>Cabelo
+          <select id="avatar-hair"></select>
+        </label>
+        <label>Roupa
+          <select id="avatar-outfit"></select>
+        </label>
+        <label>Pele
+          <select id="avatar-skin"></select>
+        </label>
+        <div class="modal-actions">
+          <button id="avatar-apply">Aplicar</button>
+          <button id="avatar-close">Fechar</button>
         </div>
       </div>
-
-      <!-- Opções de cabelo -->
-      <div class="option-section">
-        <label>💇 Cabelo</label>
-        <div class="option-row" id="hairOptions">
-          <button class="hair-btn active" data-hair="0">🟡 Liso</button>
-          <button class="hair-btn" data-hair="1">🟤 Cacheado</button>
-          <button class="hair-btn" data-hair="2">🔴 Trança</button>
-        </div>
-      </div>
-
-      <!-- Opções de roupa -->
-      <div class="option-section">
-        <label>👗 Roupa</label>
-        <div class="option-row" id="outfitOptions">
-          <button class="outfit-btn active" data-outfit="0">🌸 Rosa</button>
-          <button class="outfit-btn" data-outfit="1">⭐ Amarelo</button>
-          <button class="outfit-btn" data-outfit="2">🦋 Azul</button>
-          <button class="outfit-btn" data-outfit="3">🍀 Verde</button>
-          <button class="outfit-btn" data-outfit="4">🍭 Lilás</button>
-        </div>
-      </div>
-
-      <button class="btn-play" id="btnPlay">▶ Entrar no Quarto!</button>
     </div>
   </div>
 
-  <!-- ===== TELA DO JOGO ===== -->
-  <div id="gameScreen" class="screen">
-
-    <!-- Barra superior -->
-    <div id="topBar">
-      <span class="game-logo">🏠</span>
-      <div class="top-buttons">
-        <button class="top-btn" id="btnSave" title="Salvar">💾 Salvar</button>
-        <button class="top-btn danger" id="btnReset" title="Resetar">🗑️ Reset</button>
-        <button class="top-btn" id="btnCustomize" title="Customizar">✨ Mudar</button>
-      </div>
-    </div>
-
-    <!-- Container principal do jogo (canvas Phaser) -->
-    <div id="gameContainer"></div>
-
-    <!-- Painel lateral de móveis (catálogo) -->
-    <div id="furnitureCatalog">
-      <div class="catalog-header">🛋️ Móveis</div>
-      <div class="catalog-scroll" id="catalogItems">
-        <!-- Itens gerados pelo JS -->
-      </div>
-    </div>
-
-    <!-- Barra de ações do personagem -->
-    <div id="actionBar">
-      <button class="action-btn" id="btnDance1" title="Dançar">💃 Dança</button>
-      <button class="action-btn" id="btnDance2" title="Dançar 2">🕺 Funk</button>
-      <button class="action-btn" id="btnSit" title="Sentar">🪑 Sentar</button>
-      <button class="action-btn" id="btnIdle" title="Parar">⏹ Parar</button>
-    </div>
-
-    <!-- Toast de feedback -->
-    <div id="toast"></div>
-  </div>
-
-  <!-- Phaser 3 via CDN (funciona offline após primeiro carregamento via cache) -->
-  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+  <script src="assets/phaser.min.js"></script>
   <script src="game.js"></script>
 </body>
 </html>
