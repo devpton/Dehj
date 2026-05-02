@@ -432,11 +432,28 @@ function stepToward(fromCol, fromRow, toCol, toRow) {
 }
 
 // ============================================================
+// SPRITE SHEET — configuração dos frames (4 cols x 4 rows, 102x153px)
+// Linha 0: Walk (4 direções)
+// Linha 1: Sit  (4 direções)
+// Linha 2: Dance1 (4 frames)
+// Linha 3: Dance2 (4 frames com coraçõezinhos)
+// ============================================================
+const SPRITE_FRAME_W = 102;
+const SPRITE_FRAME_H = 153;
+const SPRITE_SCALE   = 0.72;
+
+const ANIM_ROW = { idle: 0, walk: 0, sit: 1, dance1: 2, dance2: 3 };
+const FACING_COL = { right: 2, left: 1 };
+
+let avatarSprite = null;
+
+// ============================================================
 // PRELOAD
 // ============================================================
 function scenePreload() {
   scene = this;
-  // Não há assets externos - tudo desenhado via Graphics (pixel art procedural)
+  // Carrega a sprite sheet como imagem
+  scene.load.image('personagem', 'personagem.png');
 }
 
 // ============================================================
@@ -462,10 +479,12 @@ function sceneCreate() {
     createFurniGraphic(f);
   });
 
-  // Avatar Graphics
-  avatarGraphics = scene.add.graphics();
+  // Avatar — usa sprite sheet real em vez de Graphics
+  avatarSprite = scene.add.image(0, 0, 'personagem');
+  avatarSprite.setOrigin(0.5, 1);
+  avatarSprite.setScale(SPRITE_SCALE);
   updateAvatarPosition();
-  redrawAvatar();
+  updateAvatarFrame();
 
   // Configurar input touch/mouse no chão
   scene.input.on('pointerdown', onPointerDown, scene);
@@ -919,31 +938,53 @@ function placeFurni(furniId, col, row) {
 // ============================================================
 function updateAvatarPosition() {
   const { x, y } = isoToScreen(avatarState.col, avatarState.row, roomOriginX, roomOriginY);
-  // O avatar fica no centro do tile, com os pés no fundo do tile
   avatarState.x = x;
-  avatarState.y = y + TILE_H * 1.5 - 4;
-  avatarGraphics.setDepth(avatarState.row * 10 + avatarState.col + 5);
+  avatarState.y = y + TILE_H * 1.5;
+
+  if (avatarSprite) {
+    avatarSprite.setPosition(avatarState.x, avatarState.y);
+    avatarSprite.setDepth(avatarState.row * 10 + avatarState.col + 5);
+  }
 }
 
 // ============================================================
-// REDESENHA O AVATAR
+// ATUALIZA FRAME DA SPRITE SHEET
+// Usa setCrop para mostrar apenas o frame correto da grid 4x4
 // ============================================================
-function redrawAvatar() {
-  // Wrapper para passar ao drawAvatar
-  const g = {
-    _g: avatarGraphics,
-    fillStyle(color, alpha) {
-      this._g.fillStyle(parseInt(color.replace('#', ''), 16), alpha !== undefined ? alpha : 1);
-    },
-    fillRect(x, y, w, h) { this._g.fillRect(x, y, w, h); },
-    fillRoundedRect(x, y, w, h, r) { this._g.fillRoundedRect(x, y, w, h, r); },
-    fillCircle(x, y, r) { this._g.fillCircle(x, y, r); },
-    fillPoints(pts, close) { this._g.fillPoints(pts, close); },
-    lineStyle(lw, color, alpha) { this._g.lineStyle(lw, parseInt(color.replace('#', ''), 16), alpha); },
-    clear() { this._g.clear(); },
-  };
+function updateAvatarFrame() {
+  if (!avatarSprite) return;
 
-  drawAvatar(g, avatarState.x, avatarState.y, avatarState.anim, avatarState.animFrame, avatarState.facing);
+  const row = ANIM_ROW[avatarState.anim] ?? 0;
+
+  // Para walk alterna entre col 1 e 2; para dance alterna 0-3
+  let col;
+  if (avatarState.anim === 'walk') {
+    const base = FACING_COL[avatarState.facing] ?? 2;
+    col = avatarState.animFrame % 2 === 0 ? base : (base === 2 ? 3 : 0);
+  } else if (avatarState.anim === 'idle') {
+    col = FACING_COL[avatarState.facing] ?? 2;
+  } else if (avatarState.anim === 'sit') {
+    col = FACING_COL[avatarState.facing] ?? 2;
+  } else {
+    // dance1, dance2 — percorre os 4 frames da linha
+    col = avatarState.animFrame % 4;
+  }
+
+  // setCrop(x, y, width, height) — recorta da sprite sheet
+  avatarSprite.setCrop(
+    col * SPRITE_FRAME_W,
+    row * SPRITE_FRAME_H,
+    SPRITE_FRAME_W,
+    SPRITE_FRAME_H
+  );
+
+  // Flip horizontal para facing left já está resolvido pelas colunas 0/1
+  avatarSprite.setFlipX(false);
+}
+
+// redrawAvatar agora só chama updateAvatarFrame (mantém compatibilidade)
+function redrawAvatar() {
+  updateAvatarFrame();
 }
 
 // ============================================================
@@ -1011,7 +1052,7 @@ function onResize(gameSize) {
 
   // Reposiciona avatar
   updateAvatarPosition();
-  redrawAvatar();
+  updateAvatarFrame();
 }
 
 // ============================================================
