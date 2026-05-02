@@ -440,7 +440,7 @@ function stepToward(fromCol, fromRow, toCol, toRow) {
 // ============================================================
 const SPRITE_FRAME_W = 102;
 const SPRITE_FRAME_H = 153;
-const SPRITE_SCALE   = 0.72;
+const SPRITE_SCALE   = 0.75;
 
 const ANIM_ROW = { idle: 0, walk: 0, sit: 1, dance1: 2, dance2: 3 };
 const FACING_COL = { right: 2, left: 1 };
@@ -453,7 +453,7 @@ let avatarSprite = null;
 function scenePreload() {
   scene = this;
   // Carrega a sprite sheet como imagem
-  scene.load.image('personagem', 'personagem.png');
+  scene.load.image('personagem', '1000000919-removebg-preview.png');
 }
 
 // ============================================================
