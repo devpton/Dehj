@@ -1,0 +1,35 @@
+:root {
+  --ui-bg: #2f2a47;
+  --ui-bg-soft: #4c4178;
+  --accent: #ffd54f;
+  --danger: #ef5350;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; font-family: 'Trebuchet MS', sans-serif; background: #1f1b33; }
+#game-wrap { position: relative; width: 100%; height: 100%; overflow: hidden; }
+#phaser-game { width: 100%; height: 100%; }
+button, select { font-size: 18px; border: none; border-radius: 12px; padding: 10px 14px; }
+button { background: var(--accent); font-weight: 700; }
+#hud-top {
+  position: absolute; left: 8px; top: 8px; right: 8px; z-index: 20; display: flex; gap: 8px; flex-wrap: wrap;
+}
+#catalog-panel {
+  position: absolute; right: 8px; top: 86px; bottom: 8px; width: min(34vw, 280px);
+  background: color-mix(in srgb, var(--ui-bg) 90%, black);
+  border-radius: 14px; color: white; padding: 10px; z-index: 20;
+  display: flex; flex-direction: column;
+}
+#catalog-panel h2 { margin: 0 0 8px; text-align: center; }
+#catalog-list { overflow-y: auto; display: grid; grid-template-columns: 1fr; gap: 8px; }
+.catalog-item { background: var(--ui-bg-soft); color: white; width: 100%; text-align: left; }
+.item-actions { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+#btn-delete { background: var(--danger); color: white; }
+.modal { position: absolute; inset: 0; z-index: 30; display: grid; place-items: center; background: #0007; }
+.hidden { display: none; }
+.modal-content { width: min(92vw, 360px); background: #fff4; backdrop-filter: blur(8px); color: #fff; padding: 14px; border-radius: 12px; display: grid; gap: 10px; }
+label { display: grid; gap: 5px; font-weight: 700; }
+.modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (orientation: portrait) {
+  #catalog-panel { width: min(44vw, 280px); top: 122px; }
+  button, select { font-size: 16px; padding: 10px; }
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Mini Quarto Isométrico</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game-wrap">
+    <div id="hud-top">
+      <button id="btn-save">Salvar</button>
+      <button id="btn-reset">Reset Quarto</button>
+      <button id="btn-custom">Customizar</button>
+      <button id="btn-sit">Sentar</button>
+      <button id="btn-dance">Dançar</button>
+    </div>
+
+    <div id="phaser-game"></div>
+
+    <aside id="catalog-panel">
+      <h2>Mobília</h2>
+      <div id="catalog-list"></div>
+      <div class="item-actions">
+        <button id="btn-rotate">Girar</button>
+        <button id="btn-delete">Deletar</button>
+      </div>
+    </aside>
+
+    <div id="avatar-modal" class="modal hidden">
+      <div class="modal-content">
+        <h3>Avatar (menina)</h3>
+        <label>Cabelo
+          <select id="avatar-hair"></select>
+        </label>
+        <label>Roupa
+          <select id="avatar-outfit"></select>
+        </label>
+        <label>Pele
+          <select id="avatar-skin"></select>
+        </label>
+        <div class="modal-actions">
+          <button id="avatar-apply">Aplicar</button>
+          <button id="avatar-close">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/phaser.min.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
