@@ -87,3 +87,13 @@ function create() {
   player.setOrigin(0.5, 0.8);
   player.setScale(0.8);
 }
+window.addEventListener('DOMContentLoaded', () => {
+  const btnEnter = document.getElementById('btnEnter');
+  
+  btnEnter.addEventListener('click', () => {
+    // Esconde tela inicial e mostra o jogo
+    document.getElementById('welcomeScreen').classList.remove('active');
+    document.getElementById('gameScreen').classList.add('active');
+  });
+});
+
